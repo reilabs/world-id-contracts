@@ -23,4 +23,18 @@ contract UnimplementedTreeVerifier is ITreeVerifier {
     function verifyProof(uint256[8] calldata /*proof*/, uint256[1] calldata /*input*/) external pure {
         revert UnsupportedOperation();
     }
+
+    /// Verify an uncompressed Groth16 proof.
+    /// @notice Reverts with InvalidProof if the proof is invalid or
+    /// with PublicInputNotInField the public input is not reduced.
+    /// @notice There is no return value. If the function does not revert, the
+    /// proof was successfully verified.
+    function verifyProof(
+        uint256[8] calldata,
+        uint256[2] calldata,
+        uint256[2] calldata,
+        uint256[6] calldata
+    ) public pure {
+        revert UnsupportedOperation();
+    }
 }

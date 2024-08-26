@@ -318,12 +318,12 @@ contract WorldIDIdentityManagerIdentityDeletion is WorldIDIdentityManagerTest {
     /// @notice Tests that identities can only be deleted through the proxy.
     function testCannotDelteIdentitiesIfNotViaProxy() public {
         // Setup
-        address expectedOwner = managerImpl.owner();
+        address expectedOwner = managerImplV2.owner();
         vm.expectRevert("Function must be called through delegatecall");
         vm.prank(expectedOwner);
 
         // Test
-        managerImpl.deleteIdentities(
+        managerImplV2.deleteIdentities(
             deletionProof, packedDeletionIndices, initialRoot, deletionPostRoot
         );
     }

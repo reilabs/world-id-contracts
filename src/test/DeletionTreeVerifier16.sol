@@ -564,4 +564,14 @@ contract Verifier is ITreeVerifier {
             revert ProofInvalid();
         }
     }
+
+    /// Dummy implementation to satisfy ITreeVerifier interface.
+    function verifyProof(
+        uint256[8] calldata,
+        uint256[2] calldata,
+        uint256[2] calldata,
+        uint256[6] calldata
+    ) public pure {
+        revert ProofInvalid();
+    }
 }

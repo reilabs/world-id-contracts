@@ -23,6 +23,20 @@ contract SimpleVerifier is ITreeVerifier {
             emit VerifiedProof(batchSize);
         }
     }
+
+    function verifyProof(
+        uint256[8] memory proof,
+        uint256[2] memory,
+        uint256[2] memory,
+        uint256[6] memory input)
+    external {
+        bool result = proof[0] % 2 == 0;
+
+        input[0] = 0;
+        if (result) {
+            emit VerifiedProof(batchSize);
+        }
+    }
 }
 
 library SimpleVerify {

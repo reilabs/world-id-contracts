@@ -43,7 +43,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test
-        managerImpl.getRegisterIdentitiesVerifierLookupTableAddress();
+        managerImplV2.getRegisterIdentitiesVerifierLookupTableAddress();
     }
 
     /// @notice Checks that it is possible to set the lookup table currently being used to verify
@@ -93,7 +93,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test
-        managerImpl.setRegisterIdentitiesVerifierLookupTable(insertionVerifiers);
+        managerImplV2.setRegisterIdentitiesVerifierLookupTable(insertionVerifiers);
     }
 
     /// @notice Checks that it is possible to get the address of the contract currently being used
@@ -115,7 +115,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test
-        managerImpl.getDeleteIdentitiesVerifierLookupTableAddress();
+        managerImplV2.getDeleteIdentitiesVerifierLookupTableAddress();
     }
 
     /// @notice Checks that it is possible to set the lookup table currently being used to verify
@@ -162,7 +162,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test
-        managerImpl.setDeleteIdentitiesVerifierLookupTable(deletionVerifiers);
+        managerImplV2.setDeleteIdentitiesVerifierLookupTable(deletionVerifiers);
     }
 
     /// @notice Ensures that we can get the address of the semaphore verifier.
@@ -181,7 +181,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test
-        managerImpl.getSemaphoreVerifierAddress();
+        managerImplV2.getSemaphoreVerifierAddress();
     }
 
     /// @notice Checks that it is possible to set the contract currently being used to verify
@@ -224,7 +224,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test
-        managerImpl.setSemaphoreVerifier(newVerifier);
+        managerImplV2.setSemaphoreVerifier(newVerifier);
     }
 
     /// @notice Ensures that it's possible to get the root history expiry time.
@@ -243,7 +243,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test
-        managerImpl.getRootHistoryExpiry();
+        managerImplV2.getRootHistoryExpiry();
     }
 
     /// @notice Ensures that it is possible to set the root history expiry time.
@@ -290,6 +290,6 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test
-        managerImpl.setRootHistoryExpiry(newExpiry);
+        managerImplV2.setRootHistoryExpiry(newExpiry);
     }
 }
