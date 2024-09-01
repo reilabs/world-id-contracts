@@ -163,12 +163,14 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
             params.insertionProof,
             params.commitments,
             params.commitmentPok,
-            [reducedElement,
-            evaluationReduced,
-            uint256(kzgCommitmentHash),
-            uint256(params.startIndex),
-            params.preRoot,
-            params.postRoot]
+            [
+                reducedElement,
+                evaluationReduced,
+                uint256(kzgCommitmentHash),
+                uint256(params.startIndex),
+                params.preRoot,
+                params.postRoot
+            ]
         ) {
             // If it did verify, we need to update the contract's state. We set the currently valid
             // root to the root after the insertions.
