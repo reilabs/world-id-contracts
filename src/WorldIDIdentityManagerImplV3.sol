@@ -156,7 +156,6 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
         ITreeVerifier insertionVerifier =
                             batchInsertion4844Verifiers.getVerifierFor(params.batchSize);
 
-        // TODO are we using always this one slot or should it be configurable or calculated?
         bytes32 kzgCommitmentHash = blobhash(0);
 
         // With that, we can properly try and verify.
