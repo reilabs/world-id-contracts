@@ -146,12 +146,6 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
             revert NotLatestRoot(params.preRoot, _latestRoot);
         }
 
-        // No matter what, the inputs can result in a hash that is not an element of the scalar
-        // field in which we're operating. We reduce it into the field before handing it to the
-        // verifier. All other elements that are passed as calldata are reduced in the circuit.
-        uint256 reducedElement = uint256(params.inputHash) % SNARK_SCALAR_FIELD;
-        uint256 evaluationReduced = params.expectedEvaluation % SNARK_SCALAR_FIELD;
-
         // We need to look up the correct verifier before we can verify.
         ITreeVerifier insertionVerifier =
                             batchInsertion4844Verifiers.getVerifierFor(params.batchSize);
@@ -164,8 +158,8 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
             params.commitments,
             params.commitmentPok,
             [
-                reducedElement,
-                evaluationReduced,
+                uint256(params.inputHash),
+                params.expectedEvaluation % SNARK_SCALAR_FIELD,
                 uint256(kzgCommitmentHash),
                 uint256(params.startIndex),
                 params.preRoot,
