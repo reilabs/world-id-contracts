@@ -1,4 +1,4 @@
-import {ITreeVerifier} from "src/interfaces/ITreeVerifier.sol";
+import {ITreeVerifierPedersen} from "src/interfaces/ITreeVerifierPedersen.sol";
 
 // SPDX-License-Identifier: MIT
 
@@ -10,7 +10,7 @@ pragma solidity ^0.8.0;
 /// (256 bytes) and compressed (128 bytes) format. A view function is provided
 /// to compress proofs.
 /// @notice See <https://2π.com/23/bn254-compression> for further explanation.
-contract Verifier is ITreeVerifier {
+contract Verifier is ITreeVerifierPedersen {
 
     /// Some of the provided public input values are larger than the field modulus.
     /// @dev Public input elements are not automatically reduced, as this is can be
@@ -715,9 +715,5 @@ contract Verifier is ITreeVerifier {
             // We assume the contract is correctly generated, so the verification key is valid.
             revert ProofInvalid();
         }
-    }
-
-    function verifyProof(uint256[8] calldata, uint256[1] calldata) public pure {
-        revert ProofInvalid();
     }
 }

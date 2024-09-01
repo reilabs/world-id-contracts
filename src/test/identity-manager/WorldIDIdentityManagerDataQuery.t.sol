@@ -7,6 +7,7 @@ import {SemaphoreTreeDepthValidator} from "../../utils/SemaphoreTreeDepthValidat
 import {SimpleVerify} from "../mock/SimpleVerifier.sol";
 import {TypeConverter as TC} from "../utils/TypeConverter.sol";
 import {VerifierLookupTable} from "../../data/VerifierLookupTable.sol";
+import {VerifierLookupTablePedersen} from "../../data/VerifierLookupTablePedersen.sol";
 
 import {WorldIDIdentityManagerImplV2 as ManagerImpl} from "../../WorldIDIdentityManagerImplV2.sol";
 import {WorldIDIdentityManagerImplV1 as ManagerImplV1} from "../../WorldIDIdentityManagerImplV1.sol";
@@ -24,6 +25,7 @@ contract WorldIDIdentityManagerDataQuery is WorldIDIdentityManagerTest {
             treeDepth,
             newPreRoot,
             defaultInsertVerifiers,
+            defaultInsertVerifiersPedersen,
             defaultDeletionVerifiers,
             defaultUpdateVerifiers,
             semaphoreVerifier
@@ -50,12 +52,14 @@ contract WorldIDIdentityManagerDataQuery is WorldIDIdentityManagerTest {
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([identities.length]));
         makeNewIdentityManager(
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -91,12 +95,14 @@ contract WorldIDIdentityManagerDataQuery is WorldIDIdentityManagerTest {
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([identities.length]));
         makeNewIdentityManager(
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -150,6 +156,7 @@ contract WorldIDIdentityManagerDataQuery is WorldIDIdentityManagerTest {
             treeDepth,
             actualRoot,
             defaultInsertVerifiers,
+            defaultInsertVerifiersPedersen,
             defaultDeletionVerifiers,
             defaultUpdateVerifiers,
             semaphoreVerifier
@@ -178,6 +185,7 @@ contract WorldIDIdentityManagerDataQuery is WorldIDIdentityManagerTest {
             actualTreeDepth,
             insertionPreRoot,
             defaultInsertVerifiers,
+            defaultInsertVerifiersPedersen,
             defaultDeletionVerifiers,
             defaultUpdateVerifiers,
             semaphoreVerifier

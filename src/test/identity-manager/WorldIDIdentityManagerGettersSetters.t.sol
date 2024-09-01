@@ -3,7 +3,6 @@ pragma solidity ^0.8.21;
 
 import {WorldIDIdentityManagerTest} from "./WorldIDIdentityManagerTest.sol";
 
-import {ITreeVerifier} from "../../interfaces/ITreeVerifier.sol";
 import {SemaphoreVerifier} from "src/SemaphoreVerifier.sol";
 import {SimpleVerifier, SimpleVerify} from "../mock/SimpleVerifier.sol";
 import {TypeConverter as TC} from "../utils/TypeConverter.sol";
@@ -50,7 +49,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
     ///         identity registration proofs.
     function testCanSetRegisterIdentitiesVerifierLookupTable() public {
         // Setup
-        (VerifierLookupTable insertionVerifiers,,) = makeVerifierLookupTables(TC.makeDynArray([40]));
+        (VerifierLookupTable insertionVerifiers,,,) = makeVerifierLookupTables(TC.makeDynArray([40]));
         address newVerifiersAddress = address(insertionVerifiers);
         bytes memory callData = abi.encodeCall(
             ManagerImplV1.setRegisterIdentitiesVerifierLookupTable, (insertionVerifiers)
@@ -74,7 +73,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
     {
         // Setup
         vm.assume(notOwner != address(this) && notOwner != address(0x0));
-        (VerifierLookupTable insertionVerifiers,,) = makeVerifierLookupTables(TC.makeDynArray([40]));
+        (VerifierLookupTable insertionVerifiers,,,) = makeVerifierLookupTables(TC.makeDynArray([40]));
         bytes memory callData = abi.encodeCall(
             ManagerImplV1.setRegisterIdentitiesVerifierLookupTable, (insertionVerifiers)
         );
@@ -89,7 +88,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
     ///         identity registration unless called via the proxy.
     function testCannotSetRegisterIdentitiesVerifierLookupTableUnlessViaProxy() public {
         // Setup
-        (VerifierLookupTable insertionVerifiers,,) = makeVerifierLookupTables(TC.makeDynArray([40]));
+        (VerifierLookupTable insertionVerifiers,,,) = makeVerifierLookupTables(TC.makeDynArray([40]));
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test
@@ -122,7 +121,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
     ///         identity deletion proofs.
     function testCanSetDeleteIdentitiesVerifierLookupTable() public {
         // Setup
-        (, VerifierLookupTable deletionVerifiers,) = makeVerifierLookupTables(TC.makeDynArray([40]));
+        (,, VerifierLookupTable deletionVerifiers,) = makeVerifierLookupTables(TC.makeDynArray([40]));
         address newVerifiersAddress = address(deletionVerifiers);
         bytes memory callData =
             abi.encodeCall(ManagerImpl.setDeleteIdentitiesVerifierLookupTable, (deletionVerifiers));
@@ -143,7 +142,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
     function testCannotSetDeleteIdentitiesVerifierLookupTableUnlessOwner(address notOwner) public {
         // Setup
         vm.assume(notOwner != address(this) && notOwner != address(0x0));
-        (, VerifierLookupTable deletionVerifiers,) = makeVerifierLookupTables(TC.makeDynArray([40]));
+        (,, VerifierLookupTable deletionVerifiers,) = makeVerifierLookupTables(TC.makeDynArray([40]));
         bytes memory callData = abi.encodeCall(
             ManagerImplV1.setRegisterIdentitiesVerifierLookupTable, (deletionVerifiers)
         );
@@ -158,7 +157,7 @@ contract WorldIDIdentityManagerGettersSetters is WorldIDIdentityManagerTest {
     ///         identity deletion unless called via the proxy.
     function testCannotSetDeleteIdentitiesVerifierLookupTableUnlessViaProxy() public {
         // Setup
-        (, VerifierLookupTable deletionVerifiers,) = makeVerifierLookupTables(TC.makeDynArray([40]));
+        (,, VerifierLookupTable deletionVerifiers,) = makeVerifierLookupTables(TC.makeDynArray([40]));
         vm.expectRevert("Function must be called through delegatecall");
 
         // Test

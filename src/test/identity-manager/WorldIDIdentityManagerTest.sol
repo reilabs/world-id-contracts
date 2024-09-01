@@ -6,14 +6,16 @@ import {UUPSUpgradeable} from "contracts-upgradeable/proxy/utils/UUPSUpgradeable
 import {WorldIDTest} from "../WorldIDTest.sol";
 
 import {ITreeVerifier} from "../../interfaces/ITreeVerifier.sol";
+import {ITreeVerifierPedersen} from "../../interfaces/ITreeVerifierPedersen.sol";
 import {ISemaphoreVerifier} from "src/interfaces/ISemaphoreVerifier.sol";
 import {IBridge} from "../../interfaces/IBridge.sol";
 
 import {SimpleStateBridge} from "../mock/SimpleStateBridge.sol";
-import {SimpleVerifier, SimpleVerify} from "../mock/SimpleVerifier.sol";
+import {SimpleVerifier, SimpleVerifierPedersen, SimpleVerify} from "../mock/SimpleVerifier.sol";
 import {UnimplementedTreeVerifier} from "../../utils/UnimplementedTreeVerifier.sol";
 import {SemaphoreVerifier} from "src/SemaphoreVerifier.sol";
 import {VerifierLookupTable} from "../../data/VerifierLookupTable.sol";
+import {VerifierLookupTablePedersen} from "../../data/VerifierLookupTablePedersen.sol";
 
 import {WorldIDIdentityManager as IdentityManager} from "../../WorldIDIdentityManager.sol";
 import {WorldIDIdentityManagerImplV1 as ManagerImplV1} from "../../WorldIDIdentityManagerImplV1.sol";
@@ -39,6 +41,7 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
     ManagerImplV1 internal managerImplV1;
 
     ITreeVerifier internal treeVerifier;
+    ITreeVerifierPedersen internal treeVerifierPedersen;
     uint256 internal initialRoot = 0x0;
     uint8 internal treeDepth = 16;
 
@@ -135,6 +138,7 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
     // Verifiers
     uint256 initialBatchSize = 30;
     VerifierLookupTable internal defaultInsertVerifiers;
+    VerifierLookupTablePedersen internal defaultInsertVerifiersPedersen;
     VerifierLookupTable internal defaultDeletionVerifiers;
     VerifierLookupTable internal defaultUpdateVerifiers;
 
@@ -242,10 +246,14 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
         defaultUpdateVerifiers.addVerifier(initialBatchSize, treeVerifier);
         defaultDeletionVerifiers = new VerifierLookupTable();
         defaultDeletionVerifiers.addVerifier(initialBatchSize, treeVerifier);
+        treeVerifierPedersen = new SimpleVerifierPedersen(initialBatchSize);
+        defaultInsertVerifiersPedersen = new VerifierLookupTablePedersen();
+        defaultInsertVerifiersPedersen.addVerifier(initialBatchSize, treeVerifierPedersen);
         makeNewIdentityManager(
             treeDepth,
             initialRoot,
             defaultInsertVerifiers,
+            defaultInsertVerifiersPedersen,
             defaultDeletionVerifiers,
             defaultUpdateVerifiers,
             semaphoreVerifier
@@ -267,12 +275,14 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
     ///
     /// @param actualPreRoot The pre-root to use.
     /// @param insertVerifiers The insertion verifier lookup table.
+    /// @param insertVerifiersPedersen The insertion verifier lookup table for proofs with Pedersen commitments.
     /// @param updateVerifiers The udpate verifier lookup table.
     /// @param actualSemaphoreVerifier The Semaphore verifier instance to use.
     function makeNewIdentityManager(
         uint8 actualTreeDepth,
         uint256 actualPreRoot,
         VerifierLookupTable insertVerifiers,
+        VerifierLookupTablePedersen insertVerifiersPedersen,
         VerifierLookupTable deletionVerifiers,
         VerifierLookupTable updateVerifiers,
         ISemaphoreVerifier actualSemaphoreVerifier
@@ -310,7 +320,7 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
         managerImplV3 = new ManagerImplV3();
         managerImplV3Address = address(managerImplV3);
 
-        bytes memory initCallV3 = abi.encodeCall(managerImplV3.initializeV3, (insertVerifiers));
+        bytes memory initCallV3 = abi.encodeCall(managerImplV3.initializeV3, (insertVerifiersPedersen));
         bytes memory upgradeCallV3 = abi.encodeCall(
             UUPSUpgradeable.upgradeToAndCall, (address(managerImplV3Address), initCallV3)
         );
@@ -332,7 +342,8 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(batchSizes);
         defaultInsertVerifiers = insertVerifiers;
         defaultDeletionVerifiers = deletionVerifiers;
@@ -343,6 +354,7 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
             treeDepth,
             actualPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -357,6 +369,7 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
     /// @return insertVerifiers The insertion verifier lookup table.
     /// @return deletionVerifiers The deletion verifier lookup table.
     /// @return updateVerifiers The update verifier lookup table.
+    /// @return insertVerifiersPedersen The insertion verifier lookup table for proofs with Pedersen commitments.
     ///
     /// @custom:reverts VerifierExists If `batchSizes` contains a duplicate.
     /// @custom:reverts string If any batch size exceeds 1000.
@@ -366,7 +379,8 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
         returns (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         )
     {
         // Construct the verifier LUTs from the provided `batchSizes` info.
@@ -379,6 +393,7 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
         insertVerifiers = new VerifierLookupTable();
         deletionVerifiers = new VerifierLookupTable();
         updateVerifiers = new VerifierLookupTable();
+        insertVerifiersPedersen = new VerifierLookupTablePedersen();
         for (uint256 i = 0; i < batchSizes.length; ++i) {
             uint256 batchSize = batchSizes[i];
             if (batchSize > 1000) {
@@ -389,8 +404,54 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
             insertVerifiers.addVerifier(batchSize, batchVerifier);
             deletionVerifiers.addVerifier(batchSize, batchVerifier);
             updateVerifiers.addVerifier(batchSize, batchVerifier);
+
+            ITreeVerifierPedersen batchVerifierPedersen = new SimpleVerifierPedersen(batchSize);
+            insertVerifiersPedersen.addVerifier(batchSize, batchVerifierPedersen);
         }
     }
+
+//    /// @notice Constructs new verifier lookup tables from the provided `batchSizes` for proofs with Pedersen commitments.
+//    ///
+//    /// @param batchSizes The batch sizes to create verifiers for. Verifiers will be created for
+//    ///        both insertions and updates. Must be non-empty and contain no duplicates.
+//    ///
+//    /// @return insertVerifiers The insertion verifier lookup table.
+//    /// @return deletionVerifiers The deletion verifier lookup table.
+//    /// @return updateVerifiers The update verifier lookup table.
+//    ///
+//    /// @custom:reverts VerifierExists If `batchSizes` contains a duplicate.
+//    /// @custom:reverts string If any batch size exceeds 1000.
+//    /// @custom:reverts string If `batchSizes` is empty.
+//    function makeVerifierLookupTablesPedersen(uint256[] memory batchSizes)
+//    public
+//    returns (
+//        VerifierLookupTablePedersen insertVerifiers,
+//        VerifierLookupTablePedersen deletionVerifiers,
+//        VerifierLookupTablePedersen updateVerifiers
+//    )
+//    {
+//        // Construct the verifier LUTs from the provided `batchSizes` info.
+//        if (batchSizes.length == 0) {
+//            revert("batchSizes must be non-empty.");
+//        }
+//        if (batchSizes[0] > 1000) {
+//            revert("batch size greater than 1000.");
+//        }
+//        insertVerifiers = new VerifierLookupTablePedersen();
+//        deletionVerifiers = new VerifierLookupTablePedersen();
+//        updateVerifiers = new VerifierLookupTablePedersen();
+//        for (uint256 i = 0; i < batchSizes.length; ++i) {
+//            uint256 batchSize = batchSizes[i];
+//            if (batchSize > 1000) {
+//                revert("batch size greater than 1000.");
+//            }
+//
+//            ITreeVerifierPedersen batchVerifier = new SimpleVerifierPedersen(batchSize);
+//            insertVerifiers.addVerifier(batchSize, batchVerifier);
+//            deletionVerifiers.addVerifier(batchSize, batchVerifier);
+//            updateVerifiers.addVerifier(batchSize, batchVerifier);
+//        }
+//    }
 
     /// @notice Creates a new identity manager without initializing the delegate.
     /// @dev It is constructed in the globals.

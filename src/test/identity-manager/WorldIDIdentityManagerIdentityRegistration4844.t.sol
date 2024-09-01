@@ -5,11 +5,12 @@ import {UUPSUpgradeable} from "contracts-upgradeable/proxy/utils/UUPSUpgradeable
 
 import {WorldIDIdentityManagerTest} from "./WorldIDIdentityManagerTest.sol";
 
-import {ITreeVerifier} from "../../interfaces/ITreeVerifier.sol";
-import {SimpleVerifier, SimpleVerify} from "../mock/SimpleVerifier.sol";
+import {ITreeVerifierPedersen as ITreeVerifier} from "../../interfaces/ITreeVerifierPedersen.sol";
+import {SimpleVerify} from "../mock/SimpleVerifier.sol";
 import {TypeConverter as TC} from "../utils/TypeConverter.sol";
 import {Verifier as TreeVerifier} from "src/test/InsertionTreeVerifier164844.sol";
 import {VerifierLookupTable} from "../../data/VerifierLookupTable.sol";
+import {VerifierLookupTablePedersen} from "../../data/VerifierLookupTablePedersen.sol";
 
 import {WorldIDIdentityManager as IdentityManager} from "../../WorldIDIdentityManager.sol";
 import {WorldIDIdentityManagerImplV2 as ManagerImpl} from "../../WorldIDIdentityManagerImplV2.sol";
@@ -39,13 +40,15 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([40]));
-        insertVerifiers.addVerifier(identityCommitmentsSize, actualVerifier);
+        insertVerifiersPedersen.addVerifier(identityCommitmentsSize, actualVerifier);
         makeNewIdentityManager(
             treeDepth,
             insertionPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -103,12 +106,14 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([identities.length]));
         makeNewIdentityManager(
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -165,12 +170,14 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([identities.length, secondIdentsLength]));
         makeNewIdentityManager(
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -235,12 +242,14 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([identities.length - 1]));
         makeNewIdentityManager(
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -266,7 +275,7 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         prepareBlobhash(kzgToVersionedHash(kzgCommitment));
         bytes memory callData = abi.encodeCall(ManagerImplV3.registerIdentities, params);
 
-        bytes memory errorData = abi.encodeWithSelector(VerifierLookupTable.NoSuchVerifier.selector);
+        bytes memory errorData = abi.encodeWithSelector(VerifierLookupTablePedersen.NoSuchVerifier.selector);
 
         // Test
         assertCallFailsOn(identityManagerAddress, callData, errorData);
@@ -285,13 +294,15 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([70]));
-        insertVerifiers.addVerifier(identityCommitments.length, actualVerifier);
+        insertVerifiersPedersen.addVerifier(identityCommitments.length, actualVerifier);
         makeNewIdentityManager(
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -330,13 +341,15 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([70]));
-        insertVerifiers.addVerifier(identityCommitmentsSize, actualVerifier);
+        insertVerifiersPedersen.addVerifier(identityCommitmentsSize, actualVerifier);
         makeNewIdentityManager(
             treeDepth,
             insertionPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -381,13 +394,15 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([70]));
-        insertVerifiers.addVerifier(identityCommitmentsSize, actualVerifier);
+        insertVerifiersPedersen.addVerifier(identityCommitmentsSize, actualVerifier);
         makeNewIdentityManager(
             treeDepth,
             insertionPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -428,9 +443,10 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([70]));
-        insertVerifiers.addVerifier(identityCommitmentsSize, actualVerifier);
+        insertVerifiersPedersen.addVerifier(identityCommitmentsSize, actualVerifier);
 
         bytes memory callData = abi.encodeCall(
             ManagerImplV1.initialize,
@@ -450,7 +466,7 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         // Init V3
         managerImplV3 = new ManagerImplV3();
         managerImplV3Address = address(managerImplV3);
-        bytes memory initCallV3 = abi.encodeCall(managerImplV3.initializeV3, (insertVerifiers));
+        bytes memory initCallV3 = abi.encodeCall(managerImplV3.initializeV3, (insertVerifiersPedersen));
         bytes memory upgradeCallV3 = abi.encodeCall(
             UUPSUpgradeable.upgradeToAndCall, (address(managerImplV3Address), initCallV3)
         );
@@ -528,6 +544,7 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             treeDepth,
             uint256(currentPreRoot),
             defaultInsertVerifiers,
+            defaultInsertVerifiersPedersen,
             defaultDeletionVerifiers,
             defaultUpdateVerifiers,
             semaphoreVerifier
@@ -571,12 +588,14 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([identitiesLength]));
         makeNewIdentityManager(
             treeDepth,
             initialRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier

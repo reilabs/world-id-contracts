@@ -2,6 +2,7 @@
 pragma solidity ^0.8.21;
 
 import {ITreeVerifier} from "../../interfaces/ITreeVerifier.sol";
+import {ITreeVerifierPedersen} from "../../interfaces/ITreeVerifierPedersen.sol";
 
 /// @title Simple Verifier
 /// @author Worldcoin
@@ -23,6 +24,19 @@ contract SimpleVerifier is ITreeVerifier {
             emit VerifiedProof(batchSize);
         }
     }
+}
+
+/// @title Simple Verifier for proofs with Pedersen commitments.
+/// @author Worldcoin
+/// @notice A dumb verifier to make it easy to fuzz test successes and failures.
+contract SimpleVerifierPedersen is ITreeVerifierPedersen {
+    uint256 batchSize;
+
+    event VerifiedProof(uint256 batchSize);
+
+    constructor(uint256 _batchSize) {
+        batchSize = _batchSize;
+    }
 
     function verifyProof(
         uint256[8] memory proof,
@@ -30,6 +44,7 @@ contract SimpleVerifier is ITreeVerifier {
         uint256[2] memory,
         uint256[6] memory input)
     external {
+
         bool result = proof[0] % 2 == 0;
 
         input[0] = 0;

@@ -1,6 +1,8 @@
 pragma solidity ^0.8.24;
 
 import "./WorldIDIdentityManagerImplV2.sol";
+import "./interfaces/ITreeVerifierPedersen.sol";
+import {VerifierLookupTablePedersen} from "./data/VerifierLookupTablePedersen.sol";
 
 /// @title WorldID Identity Manager Implementation Version 3
 /// @author Worldcoin
@@ -48,7 +50,7 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
     // memory safety error).
 
     /// @notice The table of verifiers for verifying batch identity insertions following the EIP-4844 scheme.
-    VerifierLookupTable internal batchInsertion4844Verifiers;
+    VerifierLookupTablePedersen internal batchInsertion4844Verifiers;
 
     /// @notice Thrown when the WorldIDIdentityManagerImplV3 contract is initialized
     event WorldIDIdentityManagerImplV3Initialized();
@@ -65,7 +67,7 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
     ///
     ///
     /// @custom:reverts InvalidVerifierLUT if `_batchInsertion4844Verifiers` is set to the zero address
-    function initializeV3(VerifierLookupTable _batchInsertion4844Verifiers) public reinitializer(3) {
+    function initializeV3(VerifierLookupTablePedersen _batchInsertion4844Verifiers) public reinitializer(3) {
         if (address(_batchInsertion4844Verifiers) == address(0)) {
             revert InvalidVerifierLUT();
         }
@@ -144,7 +146,7 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
         }
 
         // We need to look up the correct verifier before we can verify.
-        ITreeVerifier insertionVerifier =
+        ITreeVerifierPedersen insertionVerifier =
                             batchInsertion4844Verifiers.getVerifierFor(params.batchSize);
 
         bytes32 kzgCommitmentHash = blobhash(0);

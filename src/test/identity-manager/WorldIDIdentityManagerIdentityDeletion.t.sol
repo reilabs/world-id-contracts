@@ -8,6 +8,7 @@ import {SimpleVerifier, SimpleVerify} from "../mock/SimpleVerifier.sol";
 import {TypeConverter as TC} from "../utils/TypeConverter.sol";
 import {Verifier as TreeVerifier} from "src/test/DeletionTreeVerifier16.sol";
 import {VerifierLookupTable} from "../../data/VerifierLookupTable.sol";
+import {VerifierLookupTablePedersen} from "../../data/VerifierLookupTablePedersen.sol";
 
 import {WorldIDIdentityManager as IdentityManager} from "../../WorldIDIdentityManager.sol";
 import {WorldIDIdentityManagerImplV2 as ManagerImpl} from "../../WorldIDIdentityManagerImplV2.sol";
@@ -38,13 +39,15 @@ contract WorldIDIdentityManagerIdentityDeletion is WorldIDIdentityManagerTest {
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([40]));
         deletionVerifiers.addVerifier(deletionBatchSize, actualVerifier);
         makeNewIdentityManager(
             treeDepth,
             deletionPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -85,12 +88,14 @@ contract WorldIDIdentityManagerIdentityDeletion is WorldIDIdentityManagerTest {
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([packedDeletionIndices.length / 4]));
         makeNewIdentityManager(
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -130,12 +135,14 @@ contract WorldIDIdentityManagerIdentityDeletion is WorldIDIdentityManagerTest {
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([deletionBatchSize, secondIndices.length / 4]));
         makeNewIdentityManager(
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -176,7 +183,8 @@ contract WorldIDIdentityManagerIdentityDeletion is WorldIDIdentityManagerTest {
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) =
         // the -1 offsets the correct batch size by 1 thus causing the error
          makeVerifierLookupTables(TC.makeDynArray([(packedDeletionIndices.length / 4) - 1]));
@@ -184,6 +192,7 @@ contract WorldIDIdentityManagerIdentityDeletion is WorldIDIdentityManagerTest {
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -214,13 +223,15 @@ contract WorldIDIdentityManagerIdentityDeletion is WorldIDIdentityManagerTest {
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([70]));
         deletionVerifiers.addVerifier(indicesLength, actualVerifier);
         makeNewIdentityManager(
             treeDepth,
             newPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -245,13 +256,15 @@ contract WorldIDIdentityManagerIdentityDeletion is WorldIDIdentityManagerTest {
         (
             VerifierLookupTable insertVerifiers,
             VerifierLookupTable deletionVerifiers,
-            VerifierLookupTable updateVerifiers
+            VerifierLookupTable updateVerifiers,
+            VerifierLookupTablePedersen insertVerifiersPedersen
         ) = makeVerifierLookupTables(TC.makeDynArray([70]));
         deletionVerifiers.addVerifier(deletionBatchSize, actualVerifier);
         makeNewIdentityManager(
             treeDepth,
             deletionPreRoot,
             insertVerifiers,
+            insertVerifiersPedersen,
             deletionVerifiers,
             updateVerifiers,
             semaphoreVerifier
@@ -299,6 +312,7 @@ contract WorldIDIdentityManagerIdentityDeletion is WorldIDIdentityManagerTest {
             treeDepth,
             uint256(currentPreRoot),
             defaultInsertVerifiers,
+            defaultInsertVerifiersPedersen,
             defaultDeletionVerifiers,
             defaultUpdateVerifiers,
             semaphoreVerifier
