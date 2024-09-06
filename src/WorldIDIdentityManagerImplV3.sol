@@ -77,9 +77,9 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
         emit WorldIDIdentityManagerImplV3Initialized();
     }
 
-    ///////////////////////////////////////////////////////////////////
-    ///                     IDENTITY MANAGEMENT                     ///
-    ///////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
+    ///                               PUBLIC TYPES                              ///
+    ///////////////////////////////////////////////////////////////////////////////
 
     /// @notice Parameters for registerIdentities function.
     /// @dev This struct holds the parameters for registering identities and verifying the insertion proof
@@ -125,6 +125,10 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
         /// @notice The position in the tree at which the insertions were made.
         uint32 startIndex;
     }
+
+    ///////////////////////////////////////////////////////////////////
+    ///                     IDENTITY MANAGEMENT                     ///
+    ///////////////////////////////////////////////////////////////////
 
     /// @notice Registers identities into the WorldID system following the EIP-4844 scheme.
     /// @dev Can only be called by the identity operator.
