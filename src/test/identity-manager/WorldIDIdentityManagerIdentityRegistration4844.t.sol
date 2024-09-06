@@ -60,7 +60,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: insertionPreRoot,
             postRoot: insertionPostRoot4844,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(identityCommitmentsSize),
             startIndex: startIndex
@@ -127,7 +126,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: newPreRoot,
             postRoot: newPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(preparedIdents.length),
             startIndex: newStartIndex
@@ -193,7 +191,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: newPreRoot,
             postRoot: newPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(preparedIdents.length),
             startIndex: newStartIndex
@@ -260,7 +257,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: newPreRoot,
             postRoot: newPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(preparedIdents.length),
             startIndex: newStartIndex
@@ -310,7 +306,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: newPreRoot,
             postRoot: newPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(identityCommitments.length),
             startIndex: newStartIndex
@@ -356,7 +351,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: insertionPreRoot,
             postRoot: insertionPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(identityCommitments.length),
             startIndex: newStartIndex
@@ -408,7 +402,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: insertionPreRoot,
             postRoot: insertionPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(identities.length),
             startIndex: startIndex
@@ -472,7 +465,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: insertionPreRoot,
             postRoot: newPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(identityCommitments.length),
             startIndex: startIndex
@@ -504,7 +496,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: insertionPreRoot,
             postRoot: insertionPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(identityCommitments.length),
             startIndex: startIndex
@@ -551,7 +542,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: actualRoot,
             postRoot: insertionPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(identityCommitments.length),
             startIndex: startIndex
@@ -608,7 +598,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: initialRoot,
             postRoot: insertionPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(identities.length),
             startIndex: startIndex
@@ -639,7 +628,6 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
             expectedEvaluation: insertionExpectedEvaluation,
             preRoot: initialRoot,
             postRoot: insertionPostRoot,
-            kzgChallenge: kzgChallenge,
             inputHash: insertionInputHash4844,
             batchSize: uint32(identityCommitments.length),
             startIndex: startIndex

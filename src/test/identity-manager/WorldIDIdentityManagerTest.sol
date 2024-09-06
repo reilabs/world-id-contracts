@@ -80,8 +80,6 @@ contract WorldIDIdentityManagerTest is WorldIDTest {
         0x3d5d4a7d6098f2147ed77be69d93179e6179479b8771c2554e5404c06f836408;
     uint256 internal constant insertionPostRoot4844 =
         0x0c3f30b0604dae9a378e2bf62826bf5a772e9ad745df6f8c8256dff351fecee8;
-    uint256 internal constant kzgChallenge =
-        0x1b5f5a71803049342dbd89f27e11d537400e959eea99de6e29e262d22adc3468;
 
     uint256[8] insertionProof4844;
     uint256[2] commitments;

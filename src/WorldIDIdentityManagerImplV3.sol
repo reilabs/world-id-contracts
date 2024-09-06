@@ -102,7 +102,7 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
         /// @notice KZG proof associated with the commitment.
         uint128[3] kzgProof;
 
-        /// @notice Expected evaluation of the polynomial at a certain point equal to kzgChallenge.
+        /// @notice Expected evaluation of the polynomial at a certain point equal to KZG challenge.
         uint256 expectedEvaluation;
 
         /// @notice The value for the root of the tree before the `identityCommitments` have been inserted.
@@ -112,9 +112,6 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
         /// @notice The root obtained after inserting all of `identityCommitments` into the tree described
         ///         by `preRoot`. Must be an element of the field `Kr`. (already in reduced form)
         uint256 postRoot;
-
-        /// @notice Challenge value used in the KZG proof to evaluate the polynomial.
-        uint256 kzgChallenge;
 
         /// @notice Hash of the input data calculated as described in the comment
         ///         to `calculateIdentityRegistrationInputHash()`.
@@ -174,9 +171,10 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
             // which it was expired.
             rootHistory[params.preRoot] = uint128(block.timestamp);
 
+            bytes32 kzgChallenge = computeKzgChallenge(params.inputHash, kzgCommitmentHash);
             bool success = evaluatePoint(
                 kzgCommitmentHash,
-                bytes32(params.kzgChallenge),
+                kzgChallenge,
                 bytes32(params.expectedEvaluation),
                 params.kzgCommitment,
                 params.kzgProof
@@ -224,5 +222,17 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
         );
         (bool success, ) = PRECOMPILE_POINT_EVALUATION.staticcall(input);
         return success;
+    }
+
+    /// @notice Converts input values to a KZG challenge.
+    /// @dev The challenge is defined as a bytes32 value of a keccak256 hash of the concatenated inputs reduced by BN254 modulus.
+    /// @param inputHash Hash of the input data calculated as described in the comment
+    ///        to `calculateIdentityRegistrationInputHash()`.
+    /// @param kzgCommitmentVersionedHash versioned hash of the KZG commitment.
+    /// @return challenge The reduced keccak256 hash.
+    function computeKzgChallenge(bytes32 inputHash, bytes32 kzgCommitmentVersionedHash) public pure returns (bytes32) {
+        bytes memory inputBytes = abi.encodePacked(inputHash, kzgCommitmentVersionedHash);
+        uint256 reducedHash = uint256(keccak256(inputBytes)) % SNARK_SCALAR_FIELD;
+        return bytes32(reducedHash);
     }
 }
