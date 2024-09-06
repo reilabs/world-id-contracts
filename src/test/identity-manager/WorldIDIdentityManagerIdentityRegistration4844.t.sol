@@ -654,4 +654,49 @@ contract WorldIDIdentityManagerIdentityRegistration4844 is WorldIDIdentityManage
 
         managerImplV3.registerIdentities(params);
     }
+
+    /// @notice Checks that the transaction fails if KZG proof cannot be verified.
+    function testRegisterIdentitiesWithBadKzgProof() public {
+        // Setup
+        ITreeVerifier actualVerifier = new TreeVerifier();
+        (
+            VerifierLookupTable insertVerifiers,
+            VerifierLookupTable deletionVerifiers,
+            VerifierLookupTable updateVerifiers
+        ) = makeVerifierLookupTables(TC.makeDynArray([40]));
+        insertVerifiers.addVerifier(identityCommitmentsSize, actualVerifier);
+        makeNewIdentityManager(
+            treeDepth,
+            insertionPreRoot,
+            insertVerifiers,
+            deletionVerifiers,
+            updateVerifiers,
+            semaphoreVerifier
+        );
+
+        ManagerImplV3.RegisterIdentities4844Params memory params = ManagerImplV3.RegisterIdentities4844Params({
+            insertionProof: insertionProof4844,
+            commitments: commitments,
+            commitmentPok: commitmentsPok,
+            kzgCommitment: kzgCommitment,
+            kzgProof: kzgCommitment, // Intentionally pass something that's not the KZG proof
+            expectedEvaluation: insertionExpectedEvaluation,
+            preRoot: insertionPreRoot,
+            postRoot: insertionPostRoot4844,
+            inputHash: insertionInputHash4844,
+            batchSize: uint32(identityCommitmentsSize),
+            startIndex: startIndex
+        });
+
+        // Mock blobhash. This is valid for the next call only.
+        prepareBlobhash(kzgToVersionedHash(kzgCommitment));
+
+        bytes memory registerCallData = abi.encodeCall(ManagerImplV3.registerIdentities, params);
+
+        bytes memory expectedError =
+                            abi.encodeWithSelector(ManagerImplV3.KzgProofVerificationFailed.selector);
+
+        // Test
+        assertCallFailsOn(identityManagerAddress, registerCallData, expectedError);
+    }
 }

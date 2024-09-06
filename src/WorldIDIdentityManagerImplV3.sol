@@ -126,6 +126,14 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
         uint32 startIndex;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////
+    ///                                  ERRORS                                 ///
+    ///////////////////////////////////////////////////////////////////////////////
+
+    /// @notice Thrown when the point evaluation precompile returns failure.
+    ///         This means KZG proof cannot be verified.
+    error KzgProofVerificationFailed();
+
     ///////////////////////////////////////////////////////////////////
     ///                     IDENTITY MANAGEMENT                     ///
     ///////////////////////////////////////////////////////////////////
@@ -142,6 +150,7 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
     ///                 provided inputs.
     /// @custom:reverts VerifierLookupTable.NoSuchVerifier If the batch sizes doesn't match a known
     ///                 verifier.
+    /// @custom:reverts KzgProofVerificationFailed If KZG proof verification fails
     function registerIdentities(
         RegisterIdentities4844Params calldata params
     ) public virtual onlyProxy onlyInitialized onlyIdentityOperator {
@@ -185,7 +194,9 @@ contract WorldIDIdentityManagerImplV3 is WorldIDIdentityManagerImplV2 {
                 params.kzgCommitment,
                 params.kzgProof
             );
-            require(success, "Call to point evaluation precompiled contract failed");
+            if (!success) {
+                revert KzgProofVerificationFailed();
+            }
 
             emit TreeChanged(params.preRoot, TreeChange.Insertion, params.postRoot);
         } catch Error(string memory errString) {
